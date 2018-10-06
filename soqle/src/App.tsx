@@ -11,6 +11,8 @@ import MainMenu from './controls/MainMenu'
 
 import Explorer from './components/Explorer'
 
+import DatasourceManagement from './components/DatasourceManagement';
+
 class App extends React.Component {
   public render() {
     return (
@@ -25,6 +27,7 @@ class App extends React.Component {
           <Route path="/PomodoroDemo" component={ PomodoroDemo } />            
           <Route path="/ThirdDemo" component={ ThirdDemo } />*/}
           <Route path="/Explorer" component={ Explorer } />
+          <Route path="/Datasources" component={ DatasourceManagement } />
           <Route path="/" component={ Home } />                    
         </Switch>
         </>

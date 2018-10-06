@@ -45,12 +45,15 @@ export const execOnDatabase = (cmdenv:DatabaseCommandEnvelope,callback:(result:D
     // In any other language, this would be moved to a separate file.
     // **************************************************************
 
+    const databaseName = "SoQLExplorer"
+    const datasourceTableName = "Datasources"
+
     const handleDatabaseCommand = (
         command:DatabaseCommand, 
         raiseEvent:((event:DatabaseEvent)=>void),
         handleException:( (msg:string) =>((error:any)=>void) ) 
       ) => {
-        const DBOpenRequest = indexedDB.open("Pomodoro", 2)
+        const DBOpenRequest = indexedDB.open(databaseName, 1)
         DBOpenRequest.onerror = handleException("DBOpenRequest")
 
         let objectStore: IDBObjectStore
@@ -58,13 +61,10 @@ export const execOnDatabase = (cmdenv:DatabaseCommandEnvelope,callback:(result:D
         const database: IDBDatabase = DBOpenRequest.result;
 
         if (event.oldVersion < 1){
-            objectStore = database.createObjectStore("Pomodoros", { keyPath: "id", autoIncrement: true });
+            objectStore = database.createObjectStore(datasourceTableName, { keyPath: "id", autoIncrement: true });
             objectStore.createIndex("idIdx", "id", { unique: true })
             objectStore.createIndex("startIdx", "startTime", { unique: false })
-            objectStore.createIndex("userIdIdx", "userId", { unique: false })
-        } else if (event.oldVersion < 2) {
-            objectStore = DBOpenRequest.transaction!.objectStore("Pomodoros")
-            objectStore.createIndex("other", "other")
+            objectStore.createIndex("titleIdx", "title", { unique: false })
         }
       };
 
@@ -74,13 +74,13 @@ export const execOnDatabase = (cmdenv:DatabaseCommandEnvelope,callback:(result:D
           db = DBOpenRequest.result;
 
           // Run the displayData() function to populate the task list with all the to-do list data already in the IDB
-          const transaction: IDBTransaction = db.transaction(["Pomodoros"], "readwrite");
+          const transaction: IDBTransaction = db.transaction([datasourceTableName], "readwrite");
           transaction.onerror = handleException("transaction")
           transaction.oncomplete = () => {
               // console.log("**DB** transaction.oncomplete")
           };
 
-          objectStore = transaction.objectStore("Pomodoros");
+          objectStore = transaction.objectStore(datasourceTableName);
 
           switch(command.type){
               case "INSERT_DATASOURCE":
@@ -93,7 +93,7 @@ export const execOnDatabase = (cmdenv:DatabaseCommandEnvelope,callback:(result:D
                   break;
 
               case "LOAD_DATA":
-                  const index: IDBIndex = db.transaction("Pomodoros").objectStore("Pomodoros").index("userIdIdx")
+                  const index: IDBIndex = db.transaction(datasourceTableName).objectStore(datasourceTableName).index("titleIdx")
                   const boundKeyRange: IDBKeyRange = IDBKeyRange.bound("andy", "zed", false, true);
 
                   // const index: IDBIndex = db.transaction("Pomodoros").objectStore("Pomodoros").index("startIdx")

@@ -3,7 +3,7 @@ import * as React from 'react';
 
 import { QueryDatasourceIdb } from '../data/DataModels'
 
-import * as container from './explorer/ExplorerContainer'
+import * as container from './datasourceManagement/datasourceManagementContainer'
 
 import { connect } from 'react-redux';
 
@@ -23,7 +23,7 @@ const SecondStyle = {
 type ComponentState = {} & {
 }
 
-class ExplorerComp extends React.Component<ThisProps, ComponentState> {
+class DatasourceManagementComp extends React.Component<ThisProps, ComponentState> {
 // const PomodoroManagementComp: React.SFC<ThisProps> = ( {pomodoros}:ThisProps ) => 
 constructor (props:ThisProps) {
   super (props)
@@ -33,7 +33,7 @@ constructor (props:ThisProps) {
   // this.onPlannedChange = this.onPlannedChange.bind(this)
   // this.onClick = this.onClick.bind(this)
 
-  // this.props.loadItems!()
+  this.props.loadItems!()
 }
 
   public render () {
@@ -41,7 +41,7 @@ constructor (props:ThisProps) {
     <section className="hero is-primary">
       <div className="hero-body" style={SecondStyle}>
         <p className="title" style={SecondStyle}>
-          Explorer
+          Datasource Management
         </p>
         <p className="subtitle">
           List and edit <strong>Pomodoros</strong>
@@ -73,4 +73,4 @@ constructor (props:ThisProps) {
   }
 }
 
-export default connect<{}, {}, container.AttributeProps>(container.mapStateToProps, container.mapDispatchToProps) (ExplorerComp)
+export default connect<{}, {}, container.AttributeProps>(container.mapStateToProps, container.mapDispatchToProps) (DatasourceManagementComp)

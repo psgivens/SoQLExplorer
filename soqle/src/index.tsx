@@ -15,9 +15,19 @@ import registerServiceWorker from './registerServiceWorker';
 
 import createSagaMiddleware from 'redux-saga'
 
+import { DatasourcesSaga } from './actions/DatasourcesSaga'
+
+import { DatabaseWorker } from './workers/DatabaseWorker'
+
 const sagaMiddleware = createSagaMiddleware()
 
 const store: ReduxStore<state.All> = createStore(reducers, state.initialState, applyMiddleware(sagaMiddleware))
+
+const databaseWorker = new DatabaseWorker(store.dispatch)
+
+const datasourcesManagementSaga = new DatasourcesSaga(databaseWorker)
+sagaMiddleware.run(() => datasourcesManagementSaga.saga())
+// sagaMiddleware.run(createPomodoroSaga(store.dispatch))
 
 ReactDOM.render(
   <Provider store={store}><App /></Provider>,

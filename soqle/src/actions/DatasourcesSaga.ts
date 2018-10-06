@@ -39,33 +39,33 @@ export class DatasourcesSaga {
     constructor (databaseWorker:DatabaseWorker) {
         this.databaseWorker = databaseWorker
         this.saga.bind(this)
-        // this.addItem.bind(this)
+        this.addItem.bind(this)
         this.loadItems.bind(this)
     }
 
     /*************** Register listeners ********************/
     public *saga(): Iterator<any> {
-        // yield takeEvery('DATASOURCE_ADDITEM', (command:DatasourceManagementCommand) => this.addItem(command))
+        yield takeEvery('DATASOURCE_ADDITEM', (command:DatasourceManagementCommand) => this.addItem(command))
         yield takeEvery('DATASOURCE_LOADITEMS', (command:DatasourceManagementCommand) => this.loadItems(command))
     }
 
-    // private *addItem(action: DatasourceManagementCommand){
+    private *addItem(action: DatasourceManagementCommand){
 
-    //     // an 'if' block casts the action. 
-    //     if (action.type === "DATASOURCE_ADDITEM") {
-    //         const event: DatabaseEvent = yield call((command: DatabaseCommand) => this.databaseWorker.post(command), { 
-    //             item:action.item,
-    //             type: "INSERT_ITEM",
-    //         } )
+        // an 'if' block casts the action. 
+        if (action.type === "DATASOURCE_ADDITEM") {
+            const event: DatabaseEvent = yield call((command: DatabaseCommand) => this.databaseWorker.post(command), { 
+                item:action.item,
+                type: "INSERT_DATASOURCE",
+            } )
 
-    //         if (event.type === "DATASOURCE_INSERTED") {
-    //             yield put( {
-    //                 item: event.item,
-    //                 type: "POMODORO_ITEMADDED"
-    //             })
-    //         }
-    //     }  
-    // }
+            if (event.type === "DATASOURCE_INSERTED") {
+                yield put( {
+                    item: event.item,
+                    type: "DATASOURCE_ITEMADDED"
+                })
+            }
+        }  
+    }
 
     private *loadItems(action: DatasourceManagementCommand){
         
@@ -75,10 +75,17 @@ export class DatasourcesSaga {
             } )
 
             if (event.type === "DATA_LOADED") {
-                yield put( {
-                    items: event.datasources ? event.datasources : [],
-                    type: "POMODORO_ITEMSLOADED"
-                })
+                if (event.datasources){
+                    yield put( {
+                        items: event.datasources ? event.datasources : [],
+                        type: "DATASOURCE_ITEMSLOADED"
+                    })
+                } else {
+                    yield put( {
+                        items: [],
+                        type: "DATASOURCE_ITEMSLOADED"
+                    })
+                }
             }
         }  
     }
