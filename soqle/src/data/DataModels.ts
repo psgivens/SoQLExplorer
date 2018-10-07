@@ -1,5 +1,4 @@
-export type QueryDatasourceIdb = {} & {
-    id: number
+export type QueryDatasourceEntity = {} & {
     title: string
     description: string
     lastUsed: number
@@ -7,6 +6,10 @@ export type QueryDatasourceIdb = {} & {
     apiSecret: string
     url: string
     lastStatus: "None" | "Success" | "Error"
+}
+
+export type QueryDatasourceIdb = QueryDatasourceEntity & {
+    id: number
 }
 
 export const createDataSource = (

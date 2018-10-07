@@ -66,6 +66,8 @@ export const execOnDatabase = (cmdenv:DatabaseCommandEnvelope,callback:(result:D
         const database: IDBDatabase = DBOpenRequest.result;
 
         if (event.oldVersion < 1){
+            // autoIncrement: there are no examples or documentation to get us the generated id
+            // autoIncrement: there is no way to delete the id field so that the database will generate it
             objectStore = database.createObjectStore(datasourceTableName, { keyPath: "id", autoIncrement: true });
             objectStore.createIndex("idIdx", "id", { unique: true })
             objectStore.createIndex("startIdx", "startTime", { unique: false })
@@ -90,18 +92,22 @@ export const execOnDatabase = (cmdenv:DatabaseCommandEnvelope,callback:(result:D
           switch(command.type){
               case "INSERT_DATASOURCE":
 
-                  const objectStoreRequest: IDBRequest = objectStore.put(command.item)
-                  objectStoreRequest.onerror = handleException("objectStoreRequest.onerror")
-                  objectStoreRequest.onsuccess = () => 
-                      raiseEvent({type: "DATASOURCE_INSERTED", item: command.item})
-                  
-                  break;
+                if (command.item.id === 0) {
+                    command.item.id = Math.ceil(Math.random() * 100000)
+                }
+                const objectStoreRequest: IDBRequest = objectStore.put(command.item)
+                objectStoreRequest.onerror = handleException("objectStoreRequest.onerror")
+                objectStoreRequest.onsuccess = (event:any) => {
+                    raiseEvent({type: "DATASOURCE_INSERTED", item: command.item })
+               }
+                
+               break;
 
               case "LOAD_DATA":
-                  const allItems: IDBRequest = db.transaction(datasourceTableName).objectStore(datasourceTableName).getAll()
-                  allItems.onsuccess = (event:any) => {
+                const allItems: IDBRequest = db.transaction(datasourceTableName).objectStore(datasourceTableName).getAll()
+                allItems.onsuccess = (event:any) => {                
                     raiseEvent({ type: "DATA_LOADED", datasources:event.target.result })
-                  }
+                }
 
                 //   const index: IDBIndex = db.transaction(datasourceTableName).objectStore(datasourceTableName).index("titleIdx")
                 //   const boundKeyRange: IDBKeyRange = IDBKeyRange.bound("andy", "zed", false, true);

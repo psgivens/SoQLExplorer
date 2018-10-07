@@ -63,12 +63,24 @@ constructor (props:ThisProps) {
 }
 
   public render () {
-    const createSelectButton = (ds:QueryDatasourceIdb) => {
+    const createActionButtons = (ds:QueryDatasourceIdb) => {
       const onSelect = (event: React.SyntheticEvent<HTMLButtonElement>) => {
         event.preventDefault()
         this.setState({ ...this.state, editDatasource: {...ds}})    
       }
-      return <Button onClick={onSelect} text="Select" />
+      const onCopy = (event: React.SyntheticEvent<HTMLButtonElement>) => {
+        event.preventDefault()
+        this.setState({ ...this.state, editDatasource: {...ds, id:0}})    
+      }
+      const onDelete = (event: React.SyntheticEvent<HTMLButtonElement>) => {
+        event.preventDefault()
+        // this.setState({ ...this.state, editDatasource: {...ds}})    
+      }
+      return <> 
+          <Button onClick={onSelect} text="Select" /> 
+          <Button onClick={onCopy} text="Clone" /> 
+          <Button onClick={onDelete} text="Delete" /> 
+        </>
     }
   return (<div className="container-fluid" >
     <section className="hero is-primary">
@@ -82,6 +94,7 @@ constructor (props:ThisProps) {
       </div>
     </section>    
     <section className="section">
+      Id: {this.state.editDatasource.id}
       <Hidden
         name="id"
         value={this.state.editDatasource.id} />
@@ -139,7 +152,7 @@ constructor (props:ThisProps) {
             <td>{datasource.title}</td>
             <td>{datasource.url}</td>
             <td>{(new Date(datasource.lastUsed)).toLocaleString()}</td>
-            <td>{createSelectButton(datasource)}</td>
+            <td>{createActionButtons(datasource)}</td>
           </tr>)}
 
         </tbody>
