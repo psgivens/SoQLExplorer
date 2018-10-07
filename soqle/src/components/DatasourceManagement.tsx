@@ -9,14 +9,6 @@ import * as container from './datasourceManagement/datasourceManagementContainer
 
 type ThisProps = container.StateProps & container.ConnectedDispatch & container.AttributeProps
 
-
-/*************** TODO Remove *******************/
-const SecondStyle = {
-  backgroundColor: "green"
-}
-
-/*************** end Remove *******************/
-
 // TODO: Add error-boundaries
 // https://reactjs.org/docs/error-boundaries.html
 
@@ -89,16 +81,6 @@ constructor (props:ThisProps) {
   return this.state.redirect 
     ? <Redirect to={this.state.redirect} />
     : (<div className="container-fluid" >
-    <section className="hero is-primary">
-      <div className="hero-body" style={SecondStyle}>
-        <p className="title" style={SecondStyle}>
-          Datasource Management
-        </p>
-        <p className="subtitle">
-          List and edit <strong>Pomodoros</strong>
-        </p>
-      </div>
-    </section>    
     <section className="section">
     <p>Selected Datasource: { (this.props.datasource) ? JSON.stringify(this.props.datasource) : "None" }</p>
       <p>Id: {this.state.editDatasource.id}</p>

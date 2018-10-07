@@ -6,18 +6,11 @@ import * as container from './explorer/ExplorerContainer'
 
 type ThisProps = container.StateProps & container.ConnectedDispatch & container.AttributeProps
 
-/*************** TODO Remove *******************/
-const SecondStyle = {
-  backgroundColor: "green"
-}
-
-/*************** end Remove *******************/
-
 // TODO: Add error-boundaries
 // https://reactjs.org/docs/error-boundaries.html
 
 type ComponentState = {} & {
-  soql: string 
+  soql: string
 }
 
 class ExplorerComp extends React.Component<ThisProps, ComponentState> {
@@ -26,8 +19,10 @@ class ExplorerComp extends React.Component<ThisProps, ComponentState> {
     super (props)
     const query = Utils.getParameterByName('query', location.search)
     this.state = {
-      soql: query ? query : 'SELECT * WHERE record_id="PR0166398"'
+      soql: query ? query : 'SELECT * LIMIT 10'
     }
+    //  WHERE record_id="PR0166398"
+
     // this.onActualChange = this.onActualChange.bind(this)
     // this.onPlannedChange = this.onPlannedChange.bind(this)
     // this.onClick = this.onClick.bind(this)
@@ -56,18 +51,8 @@ class ExplorerComp extends React.Component<ThisProps, ComponentState> {
   public render () {
     const resultKeys = this.props.searchResults === undefined || this.props.searchResults[0] === undefined 
       ? [] 
-      : Object.keys(this.props.searchResults[0]) 
+      : Object.keys(this.props.searchResults[0])
     return (<div className="container-fluid" >
-    <section className="hero is-primary">
-      <div className="hero-body" style={SecondStyle}>
-        <p className="title" style={SecondStyle}>
-          Explorer
-        </p>
-        <p className="subtitle">
-          Search with <strong>SoQL</strong>
-        </p>
-      </div>
-    </section>    
     <section className="section">
       <p>Url: { (this.props.datasource) ? this.props.datasource.url : "__" }</p>
       <p>Current Query: { Utils.getParameterByName('query', location.search) }</p>
@@ -76,7 +61,7 @@ class ExplorerComp extends React.Component<ThisProps, ComponentState> {
             style={ {width:"90%"} }
             defaultValue="https://data.lacounty.gov/resource/kpth-apsv.json" /><br />
         <textarea  id="soqlTextarea"
-            name="query" style={ {width:"90%", height:"200px" } }
+            name="query" style={ {width:"90%", height:"50px" } }
             defaultValue={this.state.soql}
             />
         <button className="btn btn-outline-success" type="submit">Execute SOQL</button>
@@ -100,7 +85,12 @@ class ExplorerComp extends React.Component<ThisProps, ComponentState> {
               <tr key={i}>
                 <td>{i}</td>
                 {
-                  resultKeys.map( (k,i2) => (<td key={i2}>{searchResult[k]}</td>))
+                  resultKeys.map( (k,i2) => 
+                    (<td key={i2}>{
+                      typeof searchResult[k] === 'object'
+                        ? "<object>"
+                        : searchResult[k]
+                    }</td>))
                 }
               </tr>)
             : <tr key="1" />
