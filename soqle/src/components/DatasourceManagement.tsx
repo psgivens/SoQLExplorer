@@ -63,6 +63,13 @@ constructor (props:ThisProps) {
 }
 
   public render () {
+    const createSelectButton = (ds:QueryDatasourceIdb) => {
+      const onSelect = (event: React.SyntheticEvent<HTMLButtonElement>) => {
+        event.preventDefault()
+        this.setState({ ...this.state, editDatasource: {...ds}})    
+      }
+      return <Button onClick={onSelect} text="Select" />
+    }
   return (<div className="container-fluid" >
     <section className="hero is-primary">
       <div className="hero-body" style={SecondStyle}>
@@ -113,7 +120,7 @@ constructor (props:ThisProps) {
         placeholder="Enter a description for the datasource"
         value={this.state.editDatasource.description}
         onChange={this.onDescriptionChanged} />                                
-        <Button onClick={this.onSubmitPressed} text="Submit Change" />
+      <Button onClick={this.onSubmitPressed} text="Submit Change" />
     </section>
     <section className="section">
       <table className="table">
@@ -122,6 +129,7 @@ constructor (props:ThisProps) {
             <th>Title</th>
             <th>Url</th>
             <th>Last Used</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -131,6 +139,7 @@ constructor (props:ThisProps) {
             <td>{datasource.title}</td>
             <td>{datasource.url}</td>
             <td>{(new Date(datasource.lastUsed)).toLocaleString()}</td>
+            <td>{createSelectButton(datasource)}</td>
           </tr>)}
 
         </tbody>

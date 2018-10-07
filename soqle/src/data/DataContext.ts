@@ -1,4 +1,8 @@
- import { DatabaseCommand, DatabaseEvent, QueryDatasourceIdb } from './DataModels'
+import { 
+    DatabaseCommand,
+    DatabaseEvent, 
+    // QueryDatasourceIdb 
+} from './DataModels'
 
 export type DatabaseCommandEnvelope = {} & {
     correlationId: number
@@ -94,23 +98,28 @@ export const execOnDatabase = (cmdenv:DatabaseCommandEnvelope,callback:(result:D
                   break;
 
               case "LOAD_DATA":
-                  const index: IDBIndex = db.transaction(datasourceTableName).objectStore(datasourceTableName).index("titleIdx")
-                  const boundKeyRange: IDBKeyRange = IDBKeyRange.bound("andy", "zed", false, true);
+                  const allItems: IDBRequest = db.transaction(datasourceTableName).objectStore(datasourceTableName).getAll()
+                  allItems.onsuccess = (event:any) => {
+                    raiseEvent({ type: "DATA_LOADED", datasources:event.target.result })
+                  }
 
-                  // const index: IDBIndex = db.transaction("Pomodoros").objectStore("Pomodoros").index("startIdx")
-                  // const boundKeyRange: IDBKeyRange = IDBKeyRange.bound(new Date("2010-03-25T12:00:00Z"), new Date("2020-03-25T12:00:00Z"), false, true);
+                //   const index: IDBIndex = db.transaction(datasourceTableName).objectStore(datasourceTableName).index("titleIdx")
+                //   const boundKeyRange: IDBKeyRange = IDBKeyRange.bound("andy", "zed", false, true);
 
-                  const items:QueryDatasourceIdb[] = []
-                  index.openCursor(boundKeyRange).onsuccess = (event: any) => {
-                      const cursor = event.target.result;
-                      if (cursor) {
-                          items.push(cursor.value)
-                          cursor.continue();
-                      }
-                      else {
-                          raiseEvent({ type: "DATA_LOADED", datasources:items })
-                      }
-                  };
+                //   // const index: IDBIndex = db.transaction("Pomodoros").objectStore("Pomodoros").index("startIdx")
+                //   // const boundKeyRange: IDBKeyRange = IDBKeyRange.bound(new Date("2010-03-25T12:00:00Z"), new Date("2020-03-25T12:00:00Z"), false, true);
+
+                //   const items:QueryDatasourceIdb[] = []
+                //   index.openCursor(boundKeyRange).onsuccess = (event: any) => {
+                //       const cursor = event.target.result;
+                //       if (cursor) {
+                //           items.push(cursor.value)
+                //           cursor.continue();
+                //       }
+                //       else {
+                //           raiseEvent({ type: "DATA_LOADED", datasources:items })
+                //       }
+                //   };
                   break
           };
       }
