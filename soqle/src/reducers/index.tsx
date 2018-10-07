@@ -1,8 +1,8 @@
 // import { combineReducers } from 'redux'
 import reduceReducers from 'reduce-reducers';
+import { DatasourceManagementEvent } from '../actions/DatasourcesSaga'
 import { QueryDatasourceIdb } from '../data/DataModels'
 
-import { DatasourceManagementEvent } from '../actions/DatasourcesSaga'
 
 export type All = {} & {
     datasources: QueryDatasourceIdb[]
@@ -19,7 +19,9 @@ function datasourceManagmentReducer(state:All, action: DatasourceManagementEvent
         case "DATASOURCE_ITEMSLOADED":
             return { ...state, datasources: action.items }
         case "DATASOURCE_ITEMADDED":
-            return { ...state, datasources:[...state.datasources, action.item]}
+            const id = action.item.id
+            return { ...state, datasources:[
+                ...state.datasources.filter(ds => ds.id !== id), action.item]}
         default:
             return state
     }

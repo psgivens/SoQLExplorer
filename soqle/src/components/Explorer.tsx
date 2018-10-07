@@ -1,14 +1,9 @@
-
 import * as React from 'react';
-
+import { connect } from 'react-redux';
 import { QueryDatasourceIdb } from '../data/DataModels'
-
 import * as container from './explorer/ExplorerContainer'
 
-import { connect } from 'react-redux';
-
 type ThisProps = container.StateProps & container.ConnectedDispatch & container.AttributeProps
-
 
 /*************** TODO Remove *******************/
 const SecondStyle = {

@@ -6,6 +6,7 @@ export type QueryDatasourceIdb = {} & {
     apiKey: string
     apiSecret: string
     url: string
+    lastStatus: "None" | "Success" | "Error"
 }
 
 export const createDataSource = (
@@ -20,9 +21,10 @@ export const createDataSource = (
         apiSecret,
         description,
         id,
-        lastUsed,
+        lastStatus: "None",
+        lastUsed,        
         title,        
-        url            
+        url        
     })
 
 export type DatabaseCommand = {

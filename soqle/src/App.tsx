@@ -1,17 +1,13 @@
 import * as React from 'react';
-import './App.css';
-
 import { BrowserRouter as Router, Route, Switch   } from "react-router-dom"
 
-import logo from './logo.svg';
-
+import './App.css';
+import DatasourceManagement from './components/DatasourceManagement';
+import Explorer from './components/Explorer'
 import Home from './components/Home'
-
 import MainMenu from './controls/MainMenu'
 
-import Explorer from './components/Explorer'
-
-import DatasourceManagement from './components/DatasourceManagement';
+import logo from './logo.svg';
 
 class App extends React.Component {
   public render() {

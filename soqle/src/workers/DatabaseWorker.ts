@@ -1,13 +1,7 @@
-import { createWorker, ITypedWorker } from 'typed-web-workers'
-
-
-import { DatabaseCommand, DatabaseEvent } from '../data/DataModels'
-
-import { DatabaseCommandEnvelope, DatabaseResponseEnvelope, execOnDatabase } from '../data/DataContext'
-
 import { Dispatch } from 'redux'
-
-
+import { createWorker, ITypedWorker } from 'typed-web-workers'
+import { DatabaseCommandEnvelope, DatabaseResponseEnvelope, execOnDatabase } from '../data/DataContext'
+import { DatabaseCommand, DatabaseEvent } from '../data/DataModels'
 
 type PromiseBack = {} & {
   resolve: (event:DatabaseEvent) => void
@@ -16,29 +10,12 @@ type PromiseBack = {} & {
 const promiseBacks: { [index:number]: PromiseBack } = {}
 
 export type HandleDatabaseCommand = {} & {}
-// export type HandleDatabaseCommand = (
-//   command:DatabaseWorkerCommand, 
-//   raiseEvent:((event:DatabaseWorkerEvent)=>void),
-//   handleException:( (msg:string) =>((error:any)=>void) ) 
-//   ) => void
-
-
-// const handleDatabaseCommand2 = (
-//   command:DatabaseWorkerCommand, 
-//   raiseEvent:((event:DatabaseWorkerEvent)=>void),
-//   handleException:( (msg:string) =>((error:any)=>void) ) 
-//   ) => {
-//     //
-//   }
 
 export class DatabaseWorker {
   private dispatch : Dispatch<any>
   private databaseWorker: ITypedWorker<DatabaseCommandEnvelope, DatabaseResponseEnvelope>
   constructor(dispatch: Dispatch<any>){
     this.dispatch = dispatch
-    // this.post = this.post.bind(this)
-    //  this.execOnUI = this.execOnUI.bind(this)
-    // this.execOnDatabase = this.execOnDatabase.bind(this)
     this.databaseWorker = createWorker(
       execOnDatabase, this.execOnUI)    
   }

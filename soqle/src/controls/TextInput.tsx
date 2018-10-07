@@ -1,6 +1,5 @@
 import * as React from 'react';
 
-
 type AttributeProps = {} & {
     name: string
     value: string

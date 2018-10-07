@@ -1,5 +1,4 @@
- 
-import { DatabaseCommand, DatabaseEvent, QueryDatasourceIdb } from './DataModels'
+ import { DatabaseCommand, DatabaseEvent, QueryDatasourceIdb } from './DataModels'
 
 export type DatabaseCommandEnvelope = {} & {
     correlationId: number
@@ -26,7 +25,9 @@ export const execOnDatabase = (cmdenv:DatabaseCommandEnvelope,callback:(result:D
         //   console.log(JSON.stringify(error))
         callback({
             correlationId: cmdenv.correlationId,
-            error: msg + JSON.stringify(error),
+
+            // https://stackoverflow.com/questions/44815172/log-shows-error-object-istrustedtrue-instead-of-actual-error-data
+            error: msg + (JSON.stringify(error, ["message", "arguments", "type", "name"])),
             type: "ERROR",
             })
         }
@@ -85,7 +86,7 @@ export const execOnDatabase = (cmdenv:DatabaseCommandEnvelope,callback:(result:D
           switch(command.type){
               case "INSERT_DATASOURCE":
 
-                  const objectStoreRequest: IDBRequest = objectStore.add(command.item)
+                  const objectStoreRequest: IDBRequest = objectStore.put(command.item)
                   objectStoreRequest.onerror = handleException("objectStoreRequest.onerror")
                   objectStoreRequest.onsuccess = () => 
                       raiseEvent({type: "DATASOURCE_INSERTED", item: command.item})

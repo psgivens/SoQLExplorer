@@ -1,13 +1,7 @@
-// import { Dispatch } from 'redux'
 import { takeEvery } from 'redux-saga/effects'
 import { call, put } from 'redux-saga/effects'
-// import { api } from '../apis'
-
+import { DatabaseCommand, DatabaseEvent, QueryDatasourceIdb } from '../data/DataModels'
 import { DatabaseWorker } from '../workers/DatabaseWorker'
-
-import { DatabaseCommand, DatabaseEvent } from '../data/DataModels'
-
-import { QueryDatasourceIdb } from '../data/DataModels'
 
 export type DatasourceManagementCommand = {
     type: "DATASOURCE_LOADITEMS"

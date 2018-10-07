@@ -1,14 +1,7 @@
-
 import * as redux from 'redux';
-
-import * as state from '../../reducers/index'
-
-import { QueryDatasourceIdb } from '../../data/DataModels'
-
 import { DatasourceManagementCommand, DataSourceManagementCommands } from '../../actions/DatasourcesSaga'
-
-// import { CounterCommand, CounterCommands } from '../actions/CounterSaga'
-// import { FetchCommand } from '../actions/ValuesSaga'
+import { QueryDatasourceIdb } from '../../data/DataModels'
+import * as state from '../../reducers/index'
 
 export type AttributeProps = {} & {
     name: string
