@@ -1,5 +1,5 @@
 import * as redux from 'redux';
-import { DatasourceManagementCommand, DataSourceManagementCommands } from '../../actions/DatasourcesSaga'
+import { QueryExplorerCommand, QueryExplorerCommands } from '../../actions/QueryExplorerSaga'
 import { QueryDatasourceIdb } from '../../data/DataModels'
 import * as state from '../../reducers/index'
 
@@ -9,19 +9,19 @@ export type AttributeProps = {} & {
   
 export type StateProps = {} & {
     counter?: number
-    datasources: QueryDatasourceIdb[]
+    datasource: QueryDatasourceIdb | void
+    searchResults: object[]
 }
   
 export type ConnectedDispatch = {} & {
-    addItem?: (item: QueryDatasourceIdb) => void
-    loadItems?: () => void
+    query?: (url:string, soql:string) => void
 }
 
 export const mapStateToProps = (state1: state.All, ownProps: AttributeProps): StateProps => ({
-    datasources: state1.datasources
+    datasource: state1.selectedDatasource,
+    searchResults: state1.searchResults
 })
 
-export const mapDispatchToProps = (dispatch: redux.Dispatch<DatasourceManagementCommand>): ConnectedDispatch => ({
-  addItem: (item:QueryDatasourceIdb) => dispatch(DataSourceManagementCommands.addItem(item)),
-  loadItems: () => dispatch(DataSourceManagementCommands.loadItems())
+export const mapDispatchToProps = (dispatch: redux.Dispatch<QueryExplorerCommand>): ConnectedDispatch => ({
+  query: (url:string, soql:string) => dispatch(QueryExplorerCommands.query(url, soql))
 })

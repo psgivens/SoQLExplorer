@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router';
 import Button from '../controls/Button'
 import Hidden from '../controls/Hidden'
 import TextInput from '../controls/TextInput'
@@ -27,7 +28,8 @@ type ComponentState = {} & {
     apiKey: string
     apiSecret: string
     url: string
-  }
+  },
+  redirect: string | void
 }
 
 class DatasourceManagementComp extends React.Component<ThisProps, ComponentState> {
@@ -45,7 +47,8 @@ constructor (props:ThisProps) {
       id: 0,
       title: "",      
       url: ""
-    }
+    },
+    redirect: undefined
   }
   this.onTitleChanged = this.onTitleChanged.bind(this)
   this.onUrlChanged = this.onUrlChanged.bind(this)
@@ -54,11 +57,6 @@ constructor (props:ThisProps) {
   this.onDescriptionChanged = this.onDescriptionChanged.bind(this)
   this.onSubmitPressed = this.onSubmitPressed.bind(this)
 
-
-  // this.onActualChange = this.onActualChange.bind(this)
-  // this.onPlannedChange = this.onPlannedChange.bind(this)
-  // this.onClick = this.onClick.bind(this)
-
   this.props.loadItems!()
 }
 
@@ -66,7 +64,8 @@ constructor (props:ThisProps) {
     const createActionButtons = (datasource:QueryDatasourceIdb) => {
       const onSelect = (event: React.SyntheticEvent<HTMLButtonElement>) => {
         event.preventDefault()
-        // this.setState({ ...this.state, editDatasource: {...ds}})    
+        this.props.selectItem!(datasource)        
+        this.setState({redirect: "/Explorer"})
       }
       const onEdit = (event: React.SyntheticEvent<HTMLButtonElement>) => {
         event.preventDefault()
@@ -87,7 +86,9 @@ constructor (props:ThisProps) {
           <Button onClick={onDelete} text="Delete" /> 
         </>
     }
-  return (<div className="container-fluid" >
+  return this.state.redirect 
+    ? <Redirect to={this.state.redirect} />
+    : (<div className="container-fluid" >
     <section className="hero is-primary">
       <div className="hero-body" style={SecondStyle}>
         <p className="title" style={SecondStyle}>
@@ -99,7 +100,8 @@ constructor (props:ThisProps) {
       </div>
     </section>    
     <section className="section">
-      Id: {this.state.editDatasource.id}
+    <p>Selected Datasource: { (this.props.datasource) ? JSON.stringify(this.props.datasource) : "None" }</p>
+      <p>Id: {this.state.editDatasource.id}</p>
       <Hidden
         name="id"
         value={this.state.editDatasource.id} />

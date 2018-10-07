@@ -12,7 +12,7 @@ const Hidden:React.SFC<AttributeProps> = ({
 }:AttributeProps) => {
     return <input 
             name={name}
-            value={value}
+            defaultValue={value}
             type="hidden" />
 }
 

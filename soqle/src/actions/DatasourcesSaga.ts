@@ -1,5 +1,5 @@
-import { takeEvery } from 'redux-saga/effects'
-import { call, put } from 'redux-saga/effects'
+import { call, put, takeEvery } from 'redux-saga/effects'
+
 import { DatabaseCommand, DatabaseEvent, QueryDatasourceIdb } from '../data/DataModels'
 import { DatabaseWorker } from '../workers/DatabaseWorker'
 import { FetchExampleCommands, FetchExampleSaga } from './FetchExampleSaga'
@@ -13,13 +13,17 @@ export type DatasourceManagementCommand = {
     type: "DATASOURCE_DELETEITEM"
     id: number
 } | {
+    type: "DATASOURCE_SELECTITEM"
+    item: QueryDatasourceIdb
+} | {
     type: "DATASOURCE_TESTIP" 
 }
 
-export const DataSourceManagementCommands = {
+export const DatasourceManagementCommands = {
     addItem: (item: QueryDatasourceIdb):DatasourceManagementCommand => ({ type: "DATASOURCE_ADDITEM", item }),
     deleteItem: (id: number):DatasourceManagementCommand => ({ type: "DATASOURCE_DELETEITEM", id }),
-    loadItems: ():DatasourceManagementCommand => ({ type: "DATASOURCE_LOADITEMS" })
+    loadItems: ():DatasourceManagementCommand => ({ type: "DATASOURCE_LOADITEMS" }),
+    selectItem: (item: QueryDatasourceIdb):DatasourceManagementCommand => ({ type: "DATASOURCE_SELECTITEM", item })
 } 
 
 export type DatasourceManagementEvent = {
@@ -36,7 +40,10 @@ export type DatasourceManagementEvent = {
 } | {
     type: "DATASOURCE_IP_SUCCESS"
     ip: string
-}
+} | {
+    type: "DATASOURCE_ITEMSELECTED"
+    item: QueryDatasourceIdb
+} 
 
 /************************ SAGA *********************/
 
@@ -52,9 +59,23 @@ export class DatasourcesSaga {
 
     /*************** Register listeners ********************/
     public *saga(): Iterator<any> {
+        yield takeEvery('DATASOURCE_SELECTITEM', (command:DatasourceManagementCommand) => this.selectItem(command))
         yield takeEvery('DATASOURCE_ADDITEM', (command:DatasourceManagementCommand) => this.addItem(command))
         yield takeEvery('DATASOURCE_DELETEITEM', (command:DatasourceManagementCommand) => this.deleteItem(command))
         yield takeEvery('DATASOURCE_LOADITEMS', (command:DatasourceManagementCommand) => this.loadItems(command))
+    }
+
+    private *selectItem(action: DatasourceManagementCommand){
+        // an 'if' block casts the action. 
+        if (action.type === "DATASOURCE_SELECTITEM") {
+            yield put( {
+                item: action.item,
+                type: "DATASOURCE_ITEMSELECTED"
+            })
+
+            // // tslint:disable-next-line:no-console
+            // console.log("push expl")
+        }
     }
 
     private *addItem(action: DatasourceManagementCommand){

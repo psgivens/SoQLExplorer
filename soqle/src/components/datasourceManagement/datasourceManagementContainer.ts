@@ -1,5 +1,5 @@
 import * as redux from 'redux';
-import { DatasourceManagementCommand, DataSourceManagementCommands } from '../../actions/DatasourcesSaga'
+import { DatasourceManagementCommand, DatasourceManagementCommands } from '../../actions/DatasourcesSaga'
 import { QueryDatasourceIdb } from '../../data/DataModels'
 import * as state from '../../reducers/index'
 
@@ -9,20 +9,24 @@ export type AttributeProps = {} & {
   
 export type StateProps = {} & {
     datasources: QueryDatasourceIdb[]
+    datasource: QueryDatasourceIdb | void
 }
   
 export type ConnectedDispatch = {} & {
+    selectItem?: (item: QueryDatasourceIdb) => void
     addItem?: (item: QueryDatasourceIdb) => void
     deleteItem?: (id: number) => void
     loadItems?: () => void
 }
 
 export const mapStateToProps = (state1: state.All, ownProps: AttributeProps): StateProps => ({
-    datasources: state1.datasources
+    datasource: state1.selectedDatasource,
+    datasources: state1.datasources    
 })
 
 export const mapDispatchToProps = (dispatch: redux.Dispatch<DatasourceManagementCommand>): ConnectedDispatch => ({
-  addItem: (item:QueryDatasourceIdb) => dispatch(DataSourceManagementCommands.addItem(item)),
-  deleteItem: (id: number) => dispatch(DataSourceManagementCommands.deleteItem(id)),
-  loadItems: () => dispatch(DataSourceManagementCommands.loadItems())
+  addItem: (item:QueryDatasourceIdb) => dispatch(DatasourceManagementCommands.addItem(item)),
+  deleteItem: (id: number) => dispatch(DatasourceManagementCommands.deleteItem(id)),
+  loadItems: () => dispatch(DatasourceManagementCommands.loadItems()),
+  selectItem: (item:QueryDatasourceIdb) => dispatch(DatasourceManagementCommands.selectItem(item))
 })
