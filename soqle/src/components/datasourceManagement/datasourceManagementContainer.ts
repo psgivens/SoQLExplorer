@@ -13,6 +13,7 @@ export type StateProps = {} & {
   
 export type ConnectedDispatch = {} & {
     addItem?: (item: QueryDatasourceIdb) => void
+    deleteItem?: (id: number) => void
     loadItems?: () => void
 }
 
@@ -22,5 +23,6 @@ export const mapStateToProps = (state1: state.All, ownProps: AttributeProps): St
 
 export const mapDispatchToProps = (dispatch: redux.Dispatch<DatasourceManagementCommand>): ConnectedDispatch => ({
   addItem: (item:QueryDatasourceIdb) => dispatch(DataSourceManagementCommands.addItem(item)),
+  deleteItem: (id: number) => dispatch(DataSourceManagementCommands.deleteItem(id)),
   loadItems: () => dispatch(DataSourceManagementCommands.loadItems())
 })

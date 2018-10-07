@@ -35,7 +35,10 @@ export type DatabaseCommand = {
   } | {
     type: "INSERT_DATASOURCE"
     item: QueryDatasourceIdb
-  } 
+  } | {
+    type: "DELETE_DATASOURCE"
+    id: number
+  }
   
 export type DatabaseEvent = {
     type: "DATA_LOADED"
@@ -43,6 +46,9 @@ export type DatabaseEvent = {
 } | {
     type: "DATASOURCE_INSERTED"
     item: QueryDatasourceIdb
+} | {
+    type: "DATASOURCE_DELETED"
+    id: number
 } | {
     type: "DATABASE_ERROR"
     error: any

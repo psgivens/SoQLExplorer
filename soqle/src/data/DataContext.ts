@@ -57,51 +57,63 @@ export const execOnDatabase = (cmdenv:DatabaseCommandEnvelope,callback:(result:D
         command:DatabaseCommand, 
         raiseEvent:((event:DatabaseEvent)=>void),
         handleException:( (msg:string) =>((error:any)=>void) ) 
-      ) => {
+        ) => {
         const DBOpenRequest = indexedDB.open(databaseName, 1)
         DBOpenRequest.onerror = handleException("DBOpenRequest")
 
         let objectStore: IDBObjectStore
         DBOpenRequest.onupgradeneeded = (event: IDBVersionChangeEvent) => {
-        const database: IDBDatabase = DBOpenRequest.result;
+            const database: IDBDatabase = DBOpenRequest.result;
 
-        if (event.oldVersion < 1){
-            // autoIncrement: there are no examples or documentation to get us the generated id
-            // autoIncrement: there is no way to delete the id field so that the database will generate it
-            objectStore = database.createObjectStore(datasourceTableName, { keyPath: "id", autoIncrement: true });
-            objectStore.createIndex("idIdx", "id", { unique: true })
-            objectStore.createIndex("startIdx", "startTime", { unique: false })
-            objectStore.createIndex("titleIdx", "title", { unique: false })
-        }
-      };
+            if (event.oldVersion < 1){
+                // autoIncrement: there are no examples or documentation to get us the generated id
+                // autoIncrement: there is no way to delete the id field so that the database will generate it
+                objectStore = database.createObjectStore(datasourceTableName, { keyPath: "id", autoIncrement: true });
+                objectStore.createIndex("idIdx", "id", { unique: true })
+                objectStore.createIndex("startIdx", "startTime", { unique: false })
+                objectStore.createIndex("titleIdx", "title", { unique: false })
+            }
+        };
 
-      let db:IDBDatabase
-      DBOpenRequest.onsuccess = (dbOpenEvent: Event) => {
-          // store the result of opening the database in the db variable. This is used a lot below
-          db = DBOpenRequest.result;
+    let db:IDBDatabase
+    DBOpenRequest.onsuccess = (dbOpenEvent: Event) => {
+        // store the result of opening the database in the db variable. This is used a lot below
+        db = DBOpenRequest.result;
 
-          // Run the displayData() function to populate the task list with all the to-do list data already in the IDB
-          const transaction: IDBTransaction = db.transaction([datasourceTableName], "readwrite");
-          transaction.onerror = handleException("transaction")
-          transaction.oncomplete = () => {
-              // console.log("**DB** transaction.oncomplete")
-          };
+        // Run the displayData() function to populate the task list with all the to-do list data already in the IDB
+        const transaction: IDBTransaction = db.transaction([datasourceTableName], "readwrite");
+        transaction.onerror = handleException("transaction")
+        transaction.oncomplete = () => {
+            // console.log("**DB** transaction.oncomplete")
+        };
 
-          objectStore = transaction.objectStore(datasourceTableName);
+        objectStore = transaction.objectStore(datasourceTableName);
 
-          switch(command.type){
-              case "INSERT_DATASOURCE":
+        switch(command.type){
+            case "INSERT_DATASOURCE":
 
                 if (command.item.id === 0) {
                     command.item.id = Math.ceil(Math.random() * 100000)
                 }
-                const objectStoreRequest: IDBRequest = objectStore.put(command.item)
-                objectStoreRequest.onerror = handleException("objectStoreRequest.onerror")
-                objectStoreRequest.onsuccess = (event:any) => {
+                const objectStorePutRequest: IDBRequest = objectStore.put(command.item)
+                objectStorePutRequest.onerror = handleException("objectStoreRequest.onerror")
+                objectStorePutRequest.onsuccess = (event:any) => {
                     raiseEvent({type: "DATASOURCE_INSERTED", item: command.item })
-               }
+                }
                 
-               break;
+                break
+
+            case "DELETE_DATASOURCE":
+                if (command.id === 0) {
+                    break
+                }
+                const objectStoreDeleteRequest: IDBRequest = objectStore.delete(command.id)
+                objectStoreDeleteRequest.onerror = handleException("objectStoreRequest.onerror")
+                objectStoreDeleteRequest.onsuccess = (event:any) => {
+                    raiseEvent({type: "DATASOURCE_DELETED", id: command.id })
+               }
+
+                    break
 
               case "LOAD_DATA":
                 const allItems: IDBRequest = db.transaction(datasourceTableName).objectStore(datasourceTableName).getAll()

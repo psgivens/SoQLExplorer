@@ -19,9 +19,15 @@ function datasourceManagmentReducer(state:All, action: DatasourceManagementEvent
         case "DATASOURCE_ITEMSLOADED":
             return { ...state, datasources: action.items }
         case "DATASOURCE_ITEMADDED":
-            const id = action.item.id
+            const addedId = action.item.id
             return { ...state, datasources:[
-                ...state.datasources.filter(ds => ds.id !== id), action.item]}
+                ...state.datasources.filter(ds => ds.id !== addedId), action.item]}
+
+        case "DATASOURCE_DELETED":
+            const deleteId = action.id
+            return { ...state, datasources:[
+                ...state.datasources.filter(ds => ds.id !== deleteId)]}
+    
         default:
             return state
     }

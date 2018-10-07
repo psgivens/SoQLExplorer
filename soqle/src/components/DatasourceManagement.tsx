@@ -63,21 +63,26 @@ constructor (props:ThisProps) {
 }
 
   public render () {
-    const createActionButtons = (ds:QueryDatasourceIdb) => {
+    const createActionButtons = (datasource:QueryDatasourceIdb) => {
       const onSelect = (event: React.SyntheticEvent<HTMLButtonElement>) => {
-        event.preventDefault()
-        this.setState({ ...this.state, editDatasource: {...ds}})    
-      }
-      const onCopy = (event: React.SyntheticEvent<HTMLButtonElement>) => {
-        event.preventDefault()
-        this.setState({ ...this.state, editDatasource: {...ds, id:0}})    
-      }
-      const onDelete = (event: React.SyntheticEvent<HTMLButtonElement>) => {
         event.preventDefault()
         // this.setState({ ...this.state, editDatasource: {...ds}})    
       }
+      const onEdit = (event: React.SyntheticEvent<HTMLButtonElement>) => {
+        event.preventDefault()
+        this.setState({ ...this.state, editDatasource: {...datasource}})    
+      }
+      const onCopy = (event: React.SyntheticEvent<HTMLButtonElement>) => {
+        event.preventDefault()
+        this.setState({ ...this.state, editDatasource: {...datasource, id:0}})    
+      }
+      const onDelete = (event: React.SyntheticEvent<HTMLButtonElement>) => {
+        event.preventDefault()
+        this.props.deleteItem!(datasource.id)
+      }
       return <> 
           <Button onClick={onSelect} text="Select" /> 
+          <Button onClick={onEdit} text="Edit" />
           <Button onClick={onCopy} text="Clone" /> 
           <Button onClick={onDelete} text="Delete" /> 
         </>
@@ -133,7 +138,7 @@ constructor (props:ThisProps) {
         placeholder="Enter a description for the datasource"
         value={this.state.editDatasource.description}
         onChange={this.onDescriptionChanged} />                                
-      <Button onClick={this.onSubmitPressed} text="Submit Change" />
+      <Button onClick={this.onSubmitPressed} text="Test and Save" />
     </section>
     <section className="section">
       <table className="table">
@@ -189,7 +194,7 @@ constructor (props:ThisProps) {
   private onSubmitPressed (event: React.SyntheticEvent<HTMLButtonElement>) {
     event.preventDefault()
     this.props.addItem!(
-      { ...this.state.editDatasource, id:0, lastStatus: "None", lastUsed:0 }
+      { ...this.state.editDatasource, lastStatus: "None", lastUsed:0 }
     )
   }
 
