@@ -5,13 +5,13 @@ import { applyMiddleware, createStore, Store as ReduxStore } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import { CrudlSaga } from 'src/jscommon/actions/CrudlSaga'
 import { CrudlDatabaseWorker } from 'src/jscommon/workers/CrudlDatabaseWorker'
-import { QueryExplorerSaga } from './actions/QueryExplorerSaga';
 import App from './App';
+import { QueryExplorerSaga } from './core/actions/QueryExplorerSaga';
+import * as state from './core/reducers';
+import { reducers } from './core/reducers';
+import { DatabaseWorker } from './core/workers/DatabaseWorker';
 import './index.css';
-import * as state from './reducers';
-import { reducers } from './reducers';
 import registerServiceWorker from './registerServiceWorker';
-import { DatabaseWorker } from './workers/DatabaseWorker';
 
 
 

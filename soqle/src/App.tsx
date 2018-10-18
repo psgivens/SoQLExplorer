@@ -1,15 +1,13 @@
 import * as React from 'react';
 import { BrowserRouter as Router, Route, Switch   } from "react-router-dom"
-
+import DatasourceManagement from './core/components/DatasourceManagement';
+import Explorer from './core/components/Explorer'
+import Home from './core/components/Home'
+import MainMenu from './core/controls/MainMenu'
 
 import './css/soqle.css'
 
 import './App.css'
-
-import DatasourceManagement from './components/DatasourceManagement';
-import Explorer from './components/Explorer'
-import Home from './components/Home'
-import MainMenu from './controls/MainMenu'
 
 // import logo from './logo.svg';
 

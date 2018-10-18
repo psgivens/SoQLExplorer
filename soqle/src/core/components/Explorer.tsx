@@ -1,6 +1,6 @@
-import * as React from 'react';
-import { connect } from 'react-redux';
-import Utils from '../Utils'
+import * as React from 'react'
+import { connect } from 'react-redux'
+import Utils from 'src/jscommon/Utils'
 import * as container from './explorer/ExplorerContainer'
 
 type ThisProps = container.StateProps & container.ConnectedDispatch & container.AttributeProps
