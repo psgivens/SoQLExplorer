@@ -19,7 +19,7 @@ export type QueryExplorerEvent = {
     type: "QUERYEXPLORER_QUERY_FAILED"
 } | {
     type: "QUERYEXPLORER_QUERY_SUCCESS"
-    values: any[]
+    values: Array<unknown>
 }
 
 /************************ SAGA *********************/

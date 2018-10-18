@@ -18,7 +18,7 @@ export type ConnectedDispatch = {} & {
 }
 
 export const mapStateToProps = (state1: state.All, ownProps: AttributeProps): StateProps => ({
-    datasource: state1.selectedDatasource,
+    datasource: state1.datasources.selectedItem as QueryDatasourceIdb,
     searchResults: state1.searchResults
 })
 

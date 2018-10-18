@@ -1,13 +1,13 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
-import Button from '../controls/Button'
-import Hidden from '../controls/Hidden'
-import TextInput from '../controls/TextInput'
+import * as container from 'src/jscommon/components/CrudlContainer'
+import { connectContainer } from 'src/jscommon/components/CrudlContainer'
+import Button from 'src/jscommon/controls/Button'
+import Hidden from 'src/jscommon/controls/Hidden'
+import TextInput from 'src/jscommon/controls/TextInput'
 import { QueryDatasourceIdb } from '../data/DataModels'
-import * as container from './datasourceManagement/datasourceManagementContainer'
 
-type ThisProps = container.StateProps & container.ConnectedDispatch & container.AttributeProps
+type ThisProps = container.StateProps<QueryDatasourceIdb> & container.ConnectedDispatch<QueryDatasourceIdb> & container.AttributeProps
 
 // TODO: Add error-boundaries
 // https://reactjs.org/docs/error-boundaries.html
@@ -25,11 +25,8 @@ type ComponentState = {} & {
 }
 
 class DatasourceManagementComp extends React.Component<ThisProps, ComponentState> {
-// const PomodoroManagementComp: React.SFC<ThisProps> = ( {pomodoros}:ThisProps ) => 
 constructor (props:ThisProps) {
   super (props)
-    // this.state = {
-    // }
 
   this.state = {
     editDatasource: {
@@ -82,7 +79,7 @@ constructor (props:ThisProps) {
     ? <Redirect to={this.state.redirect} />
     : (<div className="container-fluid" >
     <section className="section">
-    <p>Selected Datasource: { (this.props.datasource) ? JSON.stringify(this.props.datasource) : "None" }</p>
+    <p>Selected Datasource: { (this.props.selectItem) ? JSON.stringify(this.props.selectItem) : "None" }</p>
       <p>Id: {this.state.editDatasource.id}</p>
       <Hidden
         name="id"
@@ -136,7 +133,7 @@ constructor (props:ThisProps) {
         </thead>
         <tbody>
 
-        {this.props.datasources.map((datasource:QueryDatasourceIdb)=>
+        {this.props.items.map((datasource:QueryDatasourceIdb)=>
           <tr key={datasource.id}>
             <td>{datasource.title}</td>
             <td>{datasource.url}</td>
@@ -184,4 +181,4 @@ constructor (props:ThisProps) {
 
 }
 
-export default connect<{}, {}, container.AttributeProps>(container.mapStateToProps, container.mapDispatchToProps) (DatasourceManagementComp)
+export default connectContainer("Datasources", DatasourceManagementComp, s => s.datasources)

@@ -1,55 +1,32 @@
-// import { combineReducers } from 'redux'
-import reduceReducers from 'reduce-reducers';
-import { DatasourceManagementEvent } from '../actions/DatasourcesSaga'
-import { QueryExplorerEvent } from '../actions/QueryExplorerSaga';
-import { QueryDatasourceIdb } from '../data/DataModels'
-
+import { combineReducers } from 'redux'
+import { CrudlEntity } from 'src/jscommon/data/CrudlDomainCommands'
+import { crudlReducer, CrudlState } from 'src/jscommon/reducers/CrudlReducers'
+import { QueryExplorerEvent } from '../actions/QueryExplorerSaga'
 
 export type All = {} & {
-    datasources: QueryDatasourceIdb[]
-    editingDatasource: QueryDatasourceIdb | void
-    selectedDatasource: QueryDatasourceIdb | void
-    searchResults: object[]
+    datasources: CrudlState,
+    searchResults: CrudlEntity[]
   }  
 
 export const initialState:All = { 
-  datasources: [],
-  editingDatasource: undefined,
-  searchResults: [{
-    id: "1",
-    lastUsed: 1,
-    name: "table",
-    result: "table name"
-  }],
-  selectedDatasource: undefined,  
+  datasources: {
+    editingItem: undefined,
+    items: [],
+    selectedItem: undefined
+  },
+  searchResults: [],
 }
 
-function datasourceManagmentReducer(state:All, action: DatasourceManagementEvent): All {
-    switch(action.type) {
-        case "DATASOURCE_ITEMSLOADED":
-            return { ...state, datasources: action.items }
-        case "DATASOURCE_ITEMSELECTED":
-            return {...state, selectedDatasource: action.item}
-        case "DATASOURCE_ITEMADDED":
-            const addedId = action.item.id
-            return { ...state, datasources:[
-                ...state.datasources.filter(ds => ds.id !== addedId), action.item]}
-        case "DATASOURCE_DELETED":
-            const deleteId = action.id
-            return { ...state, datasources:[
-                ...state.datasources.filter(ds => ds.id !== deleteId)]}    
-        default:
-            return state
-    }
-}
-
-function queryExplorerReducer(state:All, action: QueryExplorerEvent): All {
+function queryExplorerReducer(state:CrudlEntity[] = [], action: QueryExplorerEvent): CrudlEntity[] {
     switch(action.type) {
         case "QUERYEXPLORER_QUERY_SUCCESS":
-            return {...state, searchResults: action.values}
+            return action.values as CrudlEntity[]
         default:
             return state
     }
 }
 
-export const reducers = reduceReducers(datasourceManagmentReducer, queryExplorerReducer)
+export const reducers = combineReducers({
+    datasources: crudlReducer("Datasources"),
+    searchResults: queryExplorerReducer
+})

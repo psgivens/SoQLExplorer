@@ -1,0 +1,3 @@
+[submodule "soqle/src/jscommon"]
+	path = soqle/src/jscommon
+	url = https://github.com/psgivens/jscommon
